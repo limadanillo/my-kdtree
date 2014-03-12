@@ -39,11 +39,23 @@ public class KdTree{
 	// add the point p to the set (if it is not already in the set)
 	public void insert(Point2D p) {
 		if (p == null) throw new NullPointerException("call insert() with a null point");
-		boolean direction = false; // false means comparing x, while true means comparing y
-		Node     node      = new Node();
+		boolean direction = true; // true means comparing x, while false means comparing y
 		if (this.isEmpty()) root.p = p;
 		else {
-			if (direction) 
+			Node node = new Node();
+			node = root;
+			boolean in = false;
+			while (!in) {
+				if (direction && node.p.x() > p.x()) node = node.lt;
+				else if (direction && node.p.x() < p.x()) node = node.rt;
+				else if (!direction && node.p.y() > p.y()) node = node.lt;
+				else if (!direction && node.p.y() < p.y()) node = node.rt;
+				direction = !direction;
+				if (node == null) { 
+					node.p = p;
+					in = true;
+				}
+			} 
 			
 		}
 	}
@@ -55,8 +67,19 @@ public class KdTree{
 	 */
 	public boolean contains(Point2D p) {
 		// does the set contain the point p?
-		if (p == null) throw new NullPointerException("call contains() with a null point");
-		return points.contains(p);
+		if (p == null || this.isEmpty()) throw new NullPointerException("call contains() with a null point");
+		Node node = new Node();
+		node = this.root;
+		boolean direction = true;
+		while (!node.p.equals(p)) {
+			if (direction && node.p.x() > p.x()) node = node.lt;
+			else if (direction && node.p.x() < p.x()) node = node.rt;
+			else if (!direction && node.p.y() > p.y()) node = node.lt;
+			else if (!direction && node.p.y() < p.y()) node = node.rt;
+			direction = !direction;
+			if (node == null) return false;
+		} 
+		return true;
 	}
 	
     public void draw() {
