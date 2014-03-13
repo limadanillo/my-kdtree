@@ -64,6 +64,7 @@ public class PointSET {
 	
     public void draw() {
     	// draw all of the points to standard draw
+    	StdDraw.setPenRadius(0.01);
     	for (Point2D p: points)
     		p.draw();
     }
@@ -82,14 +83,52 @@ public class PointSET {
     // a nearest neighbor in the set to p; null if set is empty
     public Point2D nearest(Point2D p) {
     	if (p == null) throw new NullPointerException("call nearest() with a null point");
-    	double distance = 0.0;
+    	double distance = Double.POSITIVE_INFINITY;
     	Point2D nearP = new Point2D(0,0);
     	for (Point2D n:points) {
-    		if (p.distanceTo(n) < distance)
+    		if (p.distanceTo(n) < distance) {
     			distance = p.distanceTo(n);
     			nearP = n;
+    		}
     	}
     	return nearP;
     }
+    
+	public static void main(String[] args) {
+//		KdTree test = new KdTree();
+//		Point2D p1 = new Point2D(0.5,0.2);
+//		Point2D p2 = new Point2D(0.3,0.4);
+//		Point2D p3 = new Point2D(0.6,0.2);
+//		Point2D p4 = new Point2D(0.4,0.9);
+//		test.insert(p1);
+//		test.insert(p2);
+//		test.insert(p3);
+//		test.insert(p4);
+//		test.draw();
+//		StdOut.println(test.size());
+//		RectHV tt = new RectHV(0,0,0.2,0.5);
+//		for (Point2D i:test.range(tt))
+//			StdOut.println(i.toString());
+        String filename = args[0];
+        In in = new In(filename);
+
+
+        StdDraw.show(0);
+
+        // initialize the data structures with N points from standard input
+        PointSET brute = new PointSET();
+        KdTree kdtree = new KdTree();
+        while (!in.isEmpty()) {
+            double x = in.readDouble();
+            double y = in.readDouble();
+            Point2D p = new Point2D(x, y);
+            kdtree.insert(p);
+            brute.insert(p);
+        }
+        StdOut.println(kdtree.size());
+        Point2D p = new Point2D(0.81, 0.3);
+        StdOut.println(brute.nearest(p).toString());
+//        kdtree.draw();
+	}
     
 }
